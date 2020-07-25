@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: busybox
+  name: busybox
+spec:
+  selector:
+    matchLabels:
+      run: busybox
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        run: busybox
+    spec:
+      containers:
+      - args:
+        - /bin/sh
+        - -c
+        - "echo AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA;sleep 72000"
+        image: busybox
+        imagePullPolicy: Always
+        name: busybox
+      securityContext:            
+        sysctls:                  
+        - name: net.core.somaxconn
+          value: '10000' 
+      nodeName: minikube
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
